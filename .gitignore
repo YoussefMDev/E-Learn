@@ -1,0 +1,38 @@
+# ==============================
+# Dependencies (المكتبات)
+# ==============================
+node_modules/
+
+# ==============================
+# Environment Variables (المتغيرات السرية)
+# ==============================
+.env
+.env.test
+.env.production
+.env.local
+
+# ==============================
+# Logs (سجلات الأخطاء)
+# ==============================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==============================
+# OS Generated Files (ملفات نظام التشغيل)
+# ==============================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ==============================
+# Caches & Build files (ملفات الكاش)
+# ==============================
+.npm
+.eslintcache

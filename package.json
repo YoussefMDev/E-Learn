@@ -1,0 +1,31 @@
+{
+  "name": "e-learn",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000E\u0000-\u0000L\u0000e\u0000a\u0000r\u0000n\u0000\r\u0000 \u0000",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.5.2",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.2.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.2",
+    "morgan": "^1.10.1",
+    "stripe": "^22.1.1",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

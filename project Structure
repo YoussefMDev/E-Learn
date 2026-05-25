@@ -1,0 +1,55 @@
+e-learn-backend/
+│
+├── config/                     # إعدادات الاتصال بالخدمات الخارجية
+│   ├── database.js             # الاتصال بقاعدة بيانات MongoDB
+│   └── cloudinary.js           # إعدادات Cloudinary لرفع الفيديوهات والصور
+│
+├── controllers/                # منطق التحكم ومعالجة الطلبات (Controllers)
+│   ├── userController.js       # إدارة المستخدمين، المصادقة، والملف الشخصي
+│   ├── courseController.js     # إدارة الدورات التعليمية
+│   ├── lessonController.js     # إدارة الدروس ومحتواها
+│   ├── enrollmentController.js # إدارة تسجيل الطلاب وتتبع التقدم
+│   ├── reviewController.js     # مراجعات وتقييمات الدورات
+│   ├── adminController.js      # صلاحيات المشرف (لوحة تحكم الأدمن)
+│   ├── quizController.js       # إدارة الاختبارات وتصحيحها
+│   ├── paymentController.js    # بوابة Stripe والـ Webhooks
+│   ├── couponController.js     # إدارة أكواد الخصم والكوبونات
+│   └── instructorController.js # إحصائيات لوحة تحكم المحاضر
+│
+├── middlewares/                # البرمجيات الوسيطة (Middlewares)
+│   ├── authMiddleware.js       # التحقق من صلاحيات الدخول والتوكن (Protect/Roles)
+│   ├── errorMiddleware.js      # المعالج المركزي للأخطاء (Central Error Handler)
+│   ├── imageProcessingMiddleware.js # معالجة الصور وضغطها عبر Sharp
+│   └── validationMiddleware.js  # فلترة والتحقق من صحة مدخلات الـ API
+│
+├── models/                     # مخططات البيانات وقواعد البيانات (Models/Schemas)
+│   ├── userModel.js            # بيانات المستخدمين وكلمات المرور
+│   ├── courseModel.js          # تفاصيل الدورات والتقييمات
+│   ├── lessonModel.js          # بيانات الدروس وروابط الفيديوهات
+│   ├── enrollmentModel.js      # بيانات التحاق الطلاب ونسبة تقدمهم
+│   ├── reviewModel.js          # تقييمات ومراجعات الطلاب
+│   ├── quizModel.js            # أسئلة وإجابات الاختبارات
+│   └── couponModel.js          # بيانات كوبونات الخصم وتاريخ صلاحيتها
+│
+├── routes/                     # مسارات الـ API (Routes)
+│   ├── userRoutes.js
+│   ├── courseRoutes.js
+│   ├── lessonRoutes.js
+│   ├── enrollmentRoutes.js
+│   ├── reviewRoutes.js
+│   ├── adminRoutes.js
+│   ├── quizRoutes.js
+│   ├── paymentRoutes.js
+│   ├── couponRoutes.js
+│   └── instructorRoutes.js
+│
+├── utils/                      # الأدوات المساعدة والمشتركة (Utilities)
+│   ├── apiFeatures.js          # محرك البحث، الفلترة، الترتيب، والـ Pagination
+│   ├── errorHandler.js         # كلاس مخصص لبناء كائنات الأخطاء المخصصة
+│   ├── generateToken.js        # توليد كود الـ JWT للمستخدمين
+│   └── sendEmail.js            # أداة إرسال إيميلات أكواد التأكيد (Nodemailer)
+│
+├── .env                        # متغيرات البيئة السرية (المنافذ، الروابط، المفاتيح)
+├── app.js                      # الملف الرئيسي لتشغيل وتجميع التطبيق (Entry Point)
+├── package.json                # ملف إدارة الاعتمادات والمكتبات والمشغلات
+└── project-description.md      # وصف المشروع الشامل (README)
