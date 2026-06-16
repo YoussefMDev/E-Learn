@@ -28,13 +28,15 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // تشفير كلمة المرور قبل الحفظ
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
+// تشفير كلمة المرور قبل الحفظ
+userSchema.pre('save', async function () {
+    // لو الباسورد ماتعدلش، اخرج من الدالة فوراً
+    if (!this.isModified('password')) return;
+    
+    // لو جديد أو اتعدل، كمل تشفير
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
 });
-
 // دالة للتحقق من تطابق كلمة المرور
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);

@@ -1,5 +1,5 @@
 // utils/errorHandler.js
-// كلاس مخصص لإنشاء الأخطاء مع كود الحالة
+
 class AppError extends Error {
     constructor(message, statusCode) {
         super(message);

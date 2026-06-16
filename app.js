@@ -10,9 +10,11 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const connectDB = require('./config/database');
 const errorHandler = require('./middlewares/errorMiddleware');
+const AppError = require('./utils/errorHandler');
 
 // استدعاء المسارات
 const userRoutes = require('./routes/userRoutes');
+const courseRoutes = require('./routes/courseRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const enrollmentRoutes = require('./routes/enrollmentRoutes');
 const quizRoutes = require('./routes/quizRoutes');
@@ -48,8 +50,8 @@ app.use('/api', limiter);
 // (Middlewares)
 app.use(express.json({ limit: '10kb' }));
 
-// حماية قاعدة البيانات من حقن NoSQL
-app.use(mongoSanitize());
+// // حماية قاعدة البيانات من حقن NoSQL
+// app.use(mongoSanitize());
 
 // حماية ضد هجمات XSS
 app.use(xss());
@@ -72,6 +74,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Mount Routes
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/courses', courseRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/enrollments', enrollmentRoutes);
 app.use('/api/v1/quizzes', quizRoutes);
