@@ -6,7 +6,7 @@ const {
     getAllCoupons, 
     updateCoupon, 
     deleteCoupon 
-} = require('../controller/couponController');
+} = require('../controllers/couponController');
 const { protect, restrictTo } = require('../middlewares/authMiddleware');
 
 const router = express.Router();

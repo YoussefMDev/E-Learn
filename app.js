@@ -22,7 +22,7 @@ const instructorRoutes = require('./routes/instructorRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const couponRoutes = require('./routes/couponRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
-const { webhookCheckout } = require('./controller/paymentController');
+const { webhookCheckout } = require('./controllers/paymentController');
 
 
 const app = express();

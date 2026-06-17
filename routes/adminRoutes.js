@@ -6,7 +6,7 @@ const {
     getAllUsers, 
     deleteUser, 
     getAllCourses 
-} = require('../controllers/adminController'); // تصحيح المسار إلى controllers بالجمع
+} = require('../controllers/adminController'); 
 const { protect, restrictTo } = require('../middlewares/authMiddleware'); // استخدام restrictTo المتوافقة مع الكود
 
 const router = express.Router();

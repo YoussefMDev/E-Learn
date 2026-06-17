@@ -6,7 +6,7 @@ const {
     createCourse, 
     updateCourse, 
     deleteCourse 
-} = require('../controller/courseController');
+} = require('../controllers/courseController');
 
 const { protect, restrictTo } = require('../middlewares/authMiddleware');
 const { uploadCourseImage, resizeCourseImage } = require('../middlewares/imageProcessingMiddleware');

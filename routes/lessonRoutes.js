@@ -6,7 +6,7 @@ const {
     getCourseLessons, 
     updateLesson, 
     deleteLesson 
-} = require('../controller/lessonController');
+} = require('../controllers/lessonController');
 const { protect, restrictTo } = require('../middlewares/authMiddleware');
 
 const router = express.Router({ mergeParams: true });

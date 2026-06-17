@@ -5,7 +5,7 @@ const {
     getMyEnrollments, 
     updateProgress, 
     removeStudentFromCourse 
-} = require('../controller/enrollmentController');
+} = require('../controllers/enrollmentController');
 const { protect, restrictTo } = require('../middlewares/authMiddleware');
 
 const router = express.Router();

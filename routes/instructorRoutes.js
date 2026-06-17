@@ -1,6 +1,6 @@
 // routes/instructorRoutes.js
 const express = require('express');
-const { getInstructorDashboard } = require('../controller/instructorController');
+const { getInstructorDashboard } = require('../controllers/instructorController');
 const { protect, restrictTo } = require('../middlewares/authMiddleware');
 
 const router = express.Router();

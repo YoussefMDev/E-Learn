@@ -6,7 +6,7 @@ const {
     submitQuiz, 
     updateQuiz, 
     deleteQuiz 
-} = require('../controller/quizController');
+} = require('../controllers/quizController');
 const { protect, restrictTo } = require('../middlewares/authMiddleware');
 
 const router = express.Router();

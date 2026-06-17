@@ -5,7 +5,7 @@ const {
     getCourseReviews, 
     updateReview, 
     deleteReview 
-} = require('../controller/reviewController');
+} = require('../controllers/reviewController');
 const { protect, restrictTo } = require('../middlewares/authMiddleware');
 
 // تفعيل mergeParams لربطه مع مسار الكورسات
