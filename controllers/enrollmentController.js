@@ -2,12 +2,20 @@
 const Enrollment = require('../models/enrollmentModel');
 const Course = require('../models/courseModel');
 const AppError = require('../utils/errorHandler');
-const generateCertificate = require('../utils/certificateGenerator');
+
+// 💡 أسلوب الاستيراد الآمن: محاولة تحميل موديل الشهادات، وفي حال عدم وجوده لا ينهار السيرفر
+let generateCertificate;
+try {
+    generateCertificate = require('../utils/certificateGenerator');
+} catch (error) {
+    generateCertificate = null; // تعيينه كـ null لمنع انهيار السيرفر أثناء التشغيل
+    console.warn('⚠️ تنبيه: ملف utils/certificateGenerator.js غير موجود. ميزة تحميل الشهادات ستكون معطلة مؤقتاً ولكن السيرفر لن ينهار.');
+}
 
 // @desc    تسجيل طالب في كورس
 exports.enrollStudent = async (req, res, next) => {
     try {
-        // 1) قراءة معرف الكورس بمرونة تامة (يدعم التسميتين لمنع التعارض مع Postman)
+        // قراءة معرف الكورس بمرونة من الحقلين courseId أو course للتوافق مع Postman
         const courseId = req.body.course || req.body.courseId;
         const userId = req.user.id; // ممرر من authMiddleware
 
@@ -15,28 +23,21 @@ exports.enrollStudent = async (req, res, next) => {
             return next(new AppError('يرجى تحديد معرف الكورس المراد التسجيل به (courseId)', 400));
         }
 
-        // التحقق من وجود الكورس الفعلي في قاعدة البيانات السحابية أولاً
+        // التحقق من وجود الكورس في قاعدة البيانات السحابية أولاً
         const course = await Course.findById(courseId);
         if (!course) {
             return next(new AppError('الكورس المطلوب للتسجيل غير موجود في قاعدة البيانات', 404));
         }
 
-        // 2) التحقق من التسجيل المسبق بمرونة (يدعم البحث بكلا الحقلين student أو user)
-        const existingEnrollment = await Enrollment.findOne({
-            $or: [
-                { student: userId, course: courseId },
-                { user: userId, course: courseId }
-            ]
-        });
-
+        // التحقق من التسجيل المسبق باستخدام الحقل الصحيح المتوافق مع الـ Schema وهو "student"
+        const existingEnrollment = await Enrollment.findOne({ student: userId, course: courseId });
         if (existingEnrollment) {
             return next(new AppError('أنت مسجل بالفعل في هذا الكورس', 400));
         }
 
-        // 3) إنشاء سجل التسجيل الآمن وتغذية كلا الحقلين لضمان عدم حدوث ValidationError
+        // إنشاء سجل التسجيل الفعلي متوافقاً 100% مع الـ Schema المحدثة لديك
         const enrollment = await Enrollment.create({
             student: userId,
-            user: userId, // أمان إضافي ليتوافق مع جميع الموديلات الممكنة
             course: courseId
         });
 
@@ -53,9 +54,7 @@ exports.enrollStudent = async (req, res, next) => {
 exports.getMyEnrollments = async (req, res, next) => {
     try {
         const userId = req.user.id;
-        const enrollments = await Enrollment.find({
-            $or: [{ student: userId }, { user: userId }]
-        }).populate({
+        const enrollments = await Enrollment.find({ student: userId }).populate({
             path: 'course',
             select: 'title description image instructor price',
             populate: { path: 'instructor', select: 'name email' }
@@ -82,9 +81,8 @@ exports.updateEnrollmentProgress = async (req, res, next) => {
             return next(new AppError('سجل الالتحاق غير موجود', 404));
         }
 
-        // التحقق من الملكية يدعم student أو user
-        const enrollmentUserId = enrollment.student || enrollment.user;
-        if (enrollmentUserId.toString() !== userId) {
+        // التحقق من ملكية السجل للطالب الحالي
+        if (enrollment.student.toString() !== userId) {
             return next(new AppError('غير مصرح لك بتحديث هذا السجل', 403));
         }
 
@@ -100,21 +98,25 @@ exports.updateEnrollmentProgress = async (req, res, next) => {
     }
 };
 
-// @desc    تحميل شهادة إتمام الكورس
+// @desc    تحميل شهادة إتمام الكورس بصيغة PDF
 exports.getCompletionCertificate = async (req, res, next) => {
     try {
         const userId = req.user.id;
+
+        // التحقق من توفر دالة إصدار الشهادات أولاً لمنع حدوث أي Runtime Error مفاجئ
+        if (!generateCertificate) {
+            return next(new AppError('ميزة إصدار الشهادات غير متوفرة حالياً على هذا الخادم لعدم وجود ملف الإعدادات الخاص بها', 500));
+        }
+
         const enrollment = await Enrollment.findById(req.params.id)
-            .populate({ path: 'student', select: 'name email' })
-            .populate({ path: 'user', select: 'name email' })
+            .populate('student', 'name email')
             .populate('course', 'title');
 
         if (!enrollment) {
             return next(new AppError('سجل الالتحاق غير موجود', 404));
         }
 
-        const studentData = enrollment.student || enrollment.user;
-        if (studentData._id.toString() !== userId) {
+        if (enrollment.student._id.toString() !== userId) {
             return next(new AppError('غير مصرح لك بتحميل هذه الشهادة', 403));
         }
 
@@ -122,7 +124,7 @@ exports.getCompletionCertificate = async (req, res, next) => {
             return next(new AppError('لم تقم بإتمام هذا الكورس بنسبة 100% بعد لإصدار الشهادة', 400));
         }
 
-        const studentName = studentData.name;
+        const studentName = enrollment.student.name;
         const courseName = enrollment.course.title;
         const completionDate = enrollment.completedAt.toLocaleDateString('en-US', {
             year: 'numeric',
@@ -130,6 +132,7 @@ exports.getCompletionCertificate = async (req, res, next) => {
             day: 'numeric'
         });
 
+        // تصدير ملف الـ PDF مباشرة إلى الاستجابة (Stream Response)
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=certificate_${courseName}.pdf`);
         generateCertificate(res, studentName, courseName, completionDate);
