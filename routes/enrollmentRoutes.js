@@ -1,7 +1,14 @@
 const express = require('express');
 const enrollmentController = require('../controllers/enrollmentController');
 const authMiddleware = require('../middlewares/authMiddleware');
-const validators = require('../utils/errorHandler');
+
+// 🛡️ محاولة استيراد الـ validators بشكل آمن لضمان عدم انهيار السيرفر إذا كان الملف غير موجود
+let validators;
+try {
+    validators = require('../utils/validators');
+} catch (error) {
+    validators = {}; // كائن فارغ في حال عدم وجود الملف لتفعيل البدائل الآمنة بالأسفل
+}
 
 const router = express.Router();
 

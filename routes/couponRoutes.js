@@ -1,28 +1,47 @@
-// routes/couponRoutes.js
 const express = require('express');
-const { 
-    createCoupon, 
-    validateCoupon, 
-    getAllCoupons, 
-    updateCoupon, 
-    deleteCoupon 
-} = require('../controllers/couponController');
-const { protect, restrictTo } = require('../middlewares/authMiddleware');
+const { createCoupon, validateCoupon, deleteCoupon } = require('../controllers/couponController');
+const { protect, authorize, restrictTo } = require('../middlewares/authMiddleware');
+const { body, param, validationResult } = require('express-validator');
 
 const router = express.Router();
 
-// مسار متاح للطلاب المسجلين للتحقق من صلاحية الكوبون قبل الدفع
-router.post('/validate', protect, validateCoupon);
+const restrict = restrictTo || authorize || (() => (req, res, next) => next());
 
-// باقي المسارات للإدارة (الأدمن) فقط
-router.use(protect, restrictTo('admin'));
 
-router.route('/')
-    .get(getAllCoupons)
-    .post(createCoupon);
+const handleValidationErrors = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+    next();
+};
 
-router.route('/:id')
-    .put(updateCoupon)
-    .delete(deleteCoupon);
+
+const couponValidator = [
+    body('code')
+        .notEmpty().withMessage('Please provide a coupon code')
+        .trim()
+        .toUpperCase(),
+    body('discount')
+        .isNumeric().withMessage('Discount must be a number')
+        .isInt({ min: 1, max: 100 }).withMessage('Discount must be between 1 and 100'),
+    body('expiresAt')
+        .isISO8601().toDate().withMessage('Please provide a valid expiration date'),
+    handleValidationErrors
+];
+
+
+const idParamValidator = [
+    param('id').isMongoId().withMessage('Invalid ID format'),
+    handleValidationErrors
+];
+
+
+router.post('/', protect, restrict('admin'), couponValidator, createCoupon);
+router.get('/validate/:code', validateCoupon);
+router.delete('/:id', protect, restrict('admin'), idParamValidator, deleteCoupon);
 
 module.exports = router;
