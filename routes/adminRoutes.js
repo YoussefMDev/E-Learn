@@ -7,7 +7,7 @@ const {
     deleteUser, 
     getAllCourses 
 } = require('../controllers/adminController'); // تصحيح المسار إلى controllers بالجمع
-const { protect, authorize } = require('../middlewares/authMiddleware'); // استخدام authorize المتوافقة مع الكود
+const { protect, restrictTo } = require('../middlewares/authMiddleware'); // استخدام restrictTo المتوافقة مع الكود
 
 const router = express.Router();
 
