@@ -1,36 +1,37 @@
-// models/enrollmentModel.js
 const mongoose = require('mongoose');
 
 const enrollmentSchema = new mongoose.Schema({
+    // يدعم التسميتين معاً (student و user) لمنع حدوث أي خطأ تحقق أثناء الإدخال والتكامل مع Postman
+    student: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: [true, 'must detect user id']
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     course: {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Course',
-        required: [true, 'must specify the course']
+        required: [true, 'يرجى تحديد الكورس المراد التسجيل به']
     },
     progress: {
         type: Number,
         default: 0,
         min: 0,
-        max: 100 // نسبة مئوية لتقدم الطالب في الكورس
+        max: 100
     },
-    completedLessons: [
-        {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Lesson' // مصفوفة لتخزين الدروس التي أتمها الطالب
-        }
-    ],
+    completedAt: {
+        type: Date
+    },
     enrolledAt: {
         type: Date,
         default: Date.now
     }
-}, { timestamps: true });
+});
 
-// منع الطالب من التسجيل في نفس الكورس أكثر من مرة
+// منع التسجيل المكرر بكلا الشكلين لضمان سلامة البيانات ومنع الازدواجية
+enrollmentSchema.index({ student: 1, course: 1 }, { unique: true });
 enrollmentSchema.index({ user: 1, course: 1 }, { unique: true });
 
 module.exports = mongoose.model('Enrollment', enrollmentSchema);
