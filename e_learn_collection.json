@@ -1,0 +1,752 @@
+{
+"info": {
+"name": "E-Learn API Collection",
+"description": "Complete Postman Collection for E-Learn E-Learning Platform API",
+"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+},
+"item": [
+{
+"name": "Users & Auth",
+"item": [
+{
+"name": "Register User",
+"request": {
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'name': 'Youssef',\n  'email': 'student@gmail.com',\n  'password': 'password123',\n  'role': 'student'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/users/register",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "register"]
+}
+}
+},
+{
+"name": "Login User",
+"request": {
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'email': 'student@gmail.com',\n  'password': 'password123'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/users/login",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "login"]
+}
+}
+},
+{
+"name": "Get User Profile",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/users/profile",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "profile"]
+}
+}
+},
+{
+"name": "Update User Profile",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "PUT",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'name': 'Youssef Updated',\n  'email': 'student_updated@gmail.com'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/users/profile",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "profile"]
+}
+}
+},
+{
+"name": "Update Avatar",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "PUT",
+"body": {
+"mode": "formdata",
+"formdata": [
+{ "key": "avatar", "type": "file", "src": [] }
+]
+},
+"url": {
+"raw": "{{baseUrl}}/api/users/profile/avatar",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "profile", "avatar"]
+}
+}
+},
+{
+"name": "Forgot Password",
+"request": {
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'email': 'student@gmail.com'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/users/forgotpassword",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "forgotpassword"]
+}
+}
+},
+{
+"name": "Reset Password",
+"request": {
+"method": "PUT",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'password': 'newsecurepassword123'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/users/resetpassword/:token",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "resetpassword", ":token"],
+"variable": [
+{ "key": "token", "value": "your_reset_token_here" }
+]
+}
+}
+},
+{
+"name": "Sign Out",
+"request": {
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/users/signout",
+"host": ["{{baseUrl}}"],
+"path": ["api", "users", "signout"]
+}
+}
+}
+]
+},
+{
+"name": "Courses",
+"item": [
+{
+"name": "Get All Courses",
+"request": {
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/courses?keyword=javascript&sort=-price&page=1&limit=10",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses"],
+"query": [
+{ "key": "keyword", "value": "javascript" },
+{ "key": "sort", "value": "-price" },
+{ "key": "page", "value": "1" },
+{ "key": "limit", "value": "10" }
+]
+}
+}
+},
+{
+"name": "Get Course By ID",
+"request": {
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/courses/:id",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":id"],
+"variable": [
+{ "key": "id", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Create Course (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"body": {
+"mode": "formdata",
+"formdata": [
+{ "key": "title", "value": "Full-Stack Node.js Developer Course", "type": "text" },
+{ "key": "description", "value": "Learn Node.js, Express, and MongoDB from scratch.", "type": "text" },
+{ "key": "category", "value": "Web Development", "type": "text" },
+{ "key": "price", "value": "99.99", "type": "text" },
+{ "key": "image", "type": "file", "src": [] }
+]
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses"]
+}
+}
+},
+{
+"name": "Update Course (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "PUT",
+"body": {
+"mode": "formdata",
+"formdata": [
+{ "key": "title", "value": "Updated Course Title", "type": "text" },
+{ "key": "price", "value": "79.99", "type": "text" }
+]
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses/:id",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":id"],
+"variable": [
+{ "key": "id", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Delete Course (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "DELETE",
+"url": {
+"raw": "{{baseUrl}}/api/courses/:id",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":id"],
+"variable": [
+{ "key": "id", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Get My Courses (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/courses/mycourses",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", "mycourses"]
+}
+}
+}
+]
+},
+{
+"name": "Lessons",
+"item": [
+{
+"name": "Get Lessons for Course",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/courses/:courseId/lessons",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":courseId", "lessons"],
+"variable": [
+{ "key": "courseId", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Add Lesson to Course (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"body": {
+"mode": "formdata",
+"formdata": [
+{ "key": "title", "value": "Lesson 1: Introduction to Express", "type": "text" },
+{ "key": "content", "value": "In this lesson, we will set up our first Express server.", "type": "text" },
+{ "key": "video", "type": "file", "src": [] }
+]
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses/:courseId/lessons",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":courseId", "lessons"],
+"variable": [
+{ "key": "courseId", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Update Lesson (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "PUT",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'title': 'Updated Lesson Title',\n  'content': 'Updated lesson content description.'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses/lessons/:id",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", "lessons", ":id"],
+"variable": [
+{ "key": "id", "value": "lesson_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Delete Lesson (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "DELETE",
+"url": {
+"raw": "{{baseUrl}}/api/courses/lessons/:id",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", "lessons", ":id"],
+"variable": [
+{ "key": "id", "value": "lesson_mongodb_id_here" }
+]
+}
+}
+}
+]
+},
+{
+"name": "Enrollments",
+"item": [
+{
+"name": "Enroll in Course (Student Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'courseId': 'course_mongodb_id_here'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/enrollments",
+"host": ["{{baseUrl}}"],
+"path": ["api", "enrollments"]
+}
+}
+},
+{
+"name": "Get My Enrollments (Student Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/enrollments/myenrollments",
+"host": ["{{baseUrl}}"],
+"path": ["api", "enrollments", "myenrollments"]
+}
+}
+},
+{
+"name": "Update Progress (Student Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "PUT",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'progress': 100\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/enrollments/:id/progress",
+"host": ["{{baseUrl}}"],
+"path": ["api", "enrollments", ":id", "progress"],
+"variable": [
+{ "key": "id", "value": "enrollment_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Get Completion Certificate (Student Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/enrollments/:id/certificate",
+"host": ["{{baseUrl}}"],
+"path": ["api", "enrollments", ":id", "certificate"],
+"variable": [
+{ "key": "id", "value": "enrollment_mongodb_id_here" }
+]
+}
+}
+}
+]
+},
+{
+"name": "Reviews",
+"item": [
+{
+"name": "Get Reviews for Course",
+"request": {
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/courses/:courseId/reviews",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":courseId", "reviews"],
+"variable": [
+{ "key": "courseId", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Create Review (Enrolled Students Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'rating': 5,\n  'comment': 'Outstanding course! Extremely clear and well-paced.'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses/:courseId/reviews",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":courseId", "reviews"],
+"variable": [
+{ "key": "courseId", "value": "course_mongodb_id_here" }
+]
+}
+}
+}
+]
+},
+{
+"name": "Quizzes",
+"item": [
+{
+"name": "Create Quiz (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'title': 'Node.js Express & MVC Quiz'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses/:courseId/quizzes",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", ":courseId", "quizzes"],
+"variable": [
+{ "key": "courseId", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Get Quiz & Questions",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/courses/quizzes/:quizId",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", "quizzes", ":quizId"],
+"variable": [
+{ "key": "quizId", "value": "quiz_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Add Question to Quiz (Instructor Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'text': \"What does MVC stand for?\",\n  'options': [\n    'Model View Controller',\n    'Model Video Connector',\n    'Main View Compiler',\n    'Modern Version Controller'\n  ],\n  'correctAnswer': 'Model View Controller'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses/quizzes/:quizId/questions",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", "quizzes", ":quizId", "questions"],
+"variable": [
+{ "key": "quizId", "value": "quiz_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Submit Quiz Answers (Student Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'answers': [\n    {\n      'questionId': 'question_mongodb_id_here',\n      'answer': 'Model View Controller'\n    }\n  ]\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/courses/quizzes/:quizId/submit",
+"host": ["{{baseUrl}}"],
+"path": ["api", "courses", "quizzes", ":quizId", "submit"],
+"variable": [
+{ "key": "quizId", "value": "quiz_mongodb_id_here" }
+]
+}
+}
+}
+]
+},
+{
+"name": "Payments & Coupons",
+"item": [
+{
+"name": "Create Checkout Session",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'couponCode': 'SAVE30'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/payments/checkout-session/:courseId",
+"host": ["{{baseUrl}}"],
+"path": ["api", "payments", "checkout-session", ":courseId"],
+"variable": [
+{ "key": "courseId", "value": "course_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Create Coupon (Admin Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "POST",
+"header": [
+{ "key": "Content-Type", "value": "application/json" }
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  'code': 'SAVE30',\n  'discount': 30,\n  'expiresAt': '2027-12-31T23:59:59.000Z'\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/api/coupons",
+"host": ["{{baseUrl}}"],
+"path": ["api", "coupons"]
+}
+}
+},
+{
+"name": "Validate Coupon",
+"request": {
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/coupons/validate/:code",
+"host": ["{{baseUrl}}"],
+"path": ["api", "coupons", "validate", ":code"],
+"variable": [
+{ "key": "code", "value": "SAVE30" }
+]
+}
+}
+},
+{
+"name": "Delete Coupon (Admin Only)",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "DELETE",
+"url": {
+"raw": "{{baseUrl}}/api/coupons/:id",
+"host": ["{{baseUrl}}"],
+"path": ["api", "coupons", ":id"],
+"variable": [
+{ "key": "id", "value": "coupon_mongodb_id_here" }
+]
+}
+}
+}
+]
+},
+{
+"name": "Dashboards & Admins",
+"item": [
+{
+"name": "Instructor Dashboard",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/instructor/dashboard",
+"host": ["{{baseUrl}}"],
+"path": ["api", "instructor", "dashboard"]
+}
+}
+},
+{
+"name": "Admin - Get All Users",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/admin/users",
+"host": ["{{baseUrl}}"],
+"path": ["api", "admin", "users"]
+}
+}
+},
+{
+"name": "Admin - Delete User",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "DELETE",
+"url": {
+"raw": "{{baseUrl}}/api/admin/users/:id",
+"host": ["{{baseUrl}}"],
+"path": ["api", "admin", "users", ":id"],
+"variable": [
+{ "key": "id", "value": "user_mongodb_id_here" }
+]
+}
+}
+},
+{
+"name": "Admin - Get All Courses",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+},
+"method": "GET",
+"url": {
+"raw": "{{baseUrl}}/api/admin/courses",
+"host": ["{{baseUrl}}"],
+"path": ["api", "admin", "courses"]
+}
+}
+}
+]
+}
+],
+"variable": [
+{ "key": "baseUrl", "value": "https://e-learn-fawn.vercel.app", "type": "string" },
+{ "key": "authToken", "value": "your_bearer_token_here", "type": "string" }
+]
+}

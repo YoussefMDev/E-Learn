@@ -5,38 +5,46 @@ const AppError = require('../utils/errorHandler');
 
 // حماية المسارات (يجب أن يكون مسجلاً للدخول)
 exports.protect = async (req, res, next) => {
+    let token;
+
+    // 1) التحقق من وجود التوكن في الـ Headers أو الـ Cookies
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.token) {
+        token = req.cookies.token;
+    }
+
+    // إذا لم يتم العثور على التوكن
+    if (!token) {
+        return next(new ErrorHandler('غير مصرح لك بالوصول، يرجى تسجيل الدخول أولاً', 401));
+    }
+
     try {
-        let token;
-        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-            token = req.headers.authorization.split(' ')[1];
-        }
-
-        if (!token) {
-            return next(new AppError('أنت غير مسجل الدخول، يرجى تسجيل الدخول للوصول', 401));
-        }
-
-        // التحقق من صحة التوكن
+        // 2) التحقق من صحة التوكن وفك التشفير
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // التحقق مما إذا كان المستخدم لا يزال موجوداً
+        
+        // 3) البحث عن المستخدم في قاعدة البيانات الحالية
         const currentUser = await User.findById(decoded.id);
+        
+        // إذا كان التوكن سليماً ولكن المستخدم غير موجود في هذه القاعدة (لمنع خطأ 500)
         if (!currentUser) {
-            return next(new AppError('المستخدم صاحب هذا التوكن لم يعد موجوداً', 401));
+            return next(new ErrorHandler('المستخدم صاحب هذا التوكن لم يعد موجوداً في قاعدة البيانات الحالية', 401));
         }
 
-        // تمرير بيانات المستخدم للطلب الحالي
+        // 4) تمرير بيانات المستخدم للطلب للاستخدام اللاحق
         req.user = currentUser;
         next();
     } catch (error) {
-        next(new AppError('توكن غير صالح أو منتهي الصلاحية', 401));
+        return next(new ErrorHandler('انتهت صلاحية الجلسة أو التوكن غير صالح، يرجى تسجيل الدخول مجدداً', 401));
     }
 };
 
 // تحديد الصلاحيات (Roles)
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return next(new AppError('ليس لديك صلاحية لتنفيذ هذا الإجراء', 403));
+        // التحقق من دور المستخدم الحالي ومقارنته بالأدوار المسموح لها
+        if (!req.user || !roles.includes(req.user.role)) {
+            return next(new ErrorHandler(`غير مسموح لدورك (${req.user ? req.user.role : 'زائر'}) بالوصول لهذا المسار`, 403));
         }
         next();
     };
