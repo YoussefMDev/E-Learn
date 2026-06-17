@@ -1,18 +1,32 @@
 // routes/adminRoutes.js
 const express = require('express');
-const { getDashboardStats, updateUserRole } = require('../controller/adminController');
-const { protect, restrictTo } = require('../middlewares/authMiddleware');
+const { 
+    getDashboardStats, 
+    updateUserRole, 
+    getAllUsers, 
+    deleteUser, 
+    getAllCourses 
+} = require('../controllers/adminController'); // تصحيح المسار إلى controllers بالجمع
+const { protect, authorize } = require('../middlewares/authMiddleware'); // استخدام authorize المتوافقة مع الكود
 
 const router = express.Router();
 
-// جميع المسارات هنا تتطلب تسجيل الدخول وأن يكون المستخدم "أدمن"
+// جميع المسارات التالية تتطلب تسجيل الدخول وصلاحيات مشرف (Admin)
 router.use(protect);
 router.use(restrictTo('admin'));
 
-// جلب إحصائيات المنصة
+// جلب إحصائيات المنصة الشاملة
 router.get('/stats', getDashboardStats);
 
-// تعديل صلاحيات مستخدم (مثل ترقية طالب إلى محاضر)
-router.put('/users/:id/role', updateUserRole);
+// جلب جميع المستخدمين (للمشرف فقط)
+router.get('/users', getAllUsers);
+
+// جلب جميع الكورسات (للمشرف فقط)
+router.get('/courses', getAllCourses);
+
+// العمليات على مستخدم محدد (تعديل صلاحياته أو حذفه)
+router.route('/users/:id')
+    .put(updateUserRole)
+    .delete(deleteUser);
 
 module.exports = router;
